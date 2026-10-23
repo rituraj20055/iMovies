@@ -203,19 +203,24 @@ const AddMoviePage = () => {
   };
 
   // ── Delete ────────────────────────────────────────────────────────────────
-  const handleDelete = async (movie) => {
-    if (!movie || !movie._id || isDeleting) return;
+  const handleDelete = async (movieToDelete) => {
+    if (!movieToDelete || isDeleting) return;
+    const id = movieToDelete._id;
     try {
       setIsDeleting(true);
-      const res = await api.delete(`/api/movie/${movie._id}`, {
-        headers: { Authorization: `Bearer ${token}` },
+      const adminToken = localStorage.getItem('adminToken');
+      const res = await api.delete(`/api/movie/${id}`, {
+        headers: {
+          Authorization: `Bearer ${adminToken}`,
+          'auth-token': adminToken,
+        },
       });
       toast.success(res.data?.message || 'Movie deleted successfully.');
-      setMovies((prev) => prev.filter((m) => String(m._id) !== String(movie._id)));
       setDeleteConfirm(null);
-      await fetchMovies();
+      setMovies((prev) => prev.filter((m) => m._id !== id));
+      fetchMovies();
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to delete movie.');
+      toast.error(err.response?.data?.message || 'Delete failed.');
     } finally {
       setIsDeleting(false);
     }
@@ -643,10 +648,15 @@ const AddMoviePage = () => {
                               type="button"
                               className="icon-btn icon-btn--delete"
                               onClick={() => setDeleteConfirm(m)}
-                              title="Delete Movie"
+                              disabled={isDeleting}
+                              title={`Delete ${m.movieName || m.name}`}
                               aria-label={`Delete ${m.movieName || m.name}`}
                             >
-                              <FontAwesomeIcon icon={faTrash} />
+                              {isDeleting && deleteConfirm?._id === m._id ? (
+                                <FontAwesomeIcon icon={faSpinner} spin />
+                              ) : (
+                                <FontAwesomeIcon icon={faTrash} />
+                              )}
                             </button>
                           </div>
                         </td>
@@ -660,36 +670,38 @@ const AddMoviePage = () => {
 
           {/* ── Delete Confirmation Modal ── */}
           {deleteConfirm && (
-            <div className="modal-overlay" onClick={() => !isDeleting && setDeleteConfirm(null)}>
-              <div className="admin-modal" onClick={(e) => e.stopPropagation()}>
-                <div className="admin-modal__header">
-                  <div className="admin-modal__icon">
+            <div className="delete-modal-overlay" onClick={() => !isDeleting && setDeleteConfirm(null)}>
+              <div className="delete-modal-card" onClick={(e) => e.stopPropagation()}>
+                <div className="delete-modal-header">
+                  <div className="delete-modal-icon">
                     <FontAwesomeIcon icon={faTrash} />
                   </div>
                   <div>
-                    <h3 className="admin-modal__title">Delete Movie?</h3>
-                    <div className="admin-modal__movie-title">
-                      {deleteConfirm.movieName || deleteConfirm.name}
-                    </div>
+                    <h3 className="delete-modal-title">Delete Movie?</h3>
+                    <span className="small text-danger fw-bold">
+                      "{deleteConfirm.movieName || deleteConfirm.name}"
+                    </span>
                   </div>
                 </div>
-                <p className="admin-modal__desc">
-                  Are you sure you want to remove this movie? If it has existing booking history, it will be safely archived from the active catalogue to preserve customer tickets and financial records.
+                <p className="delete-modal-text">
+                  Are you sure you want to delete <strong>{deleteConfirm.movieName || deleteConfirm.name}</strong>?
+                  This will remove the title from the active cinema catalogue and deactivate any unsold shows.
+                  Historical booking records and financial audits will be safely preserved.
                 </p>
-                <div className="admin-modal__actions">
+                <div className="delete-modal-actions">
                   <button
                     type="button"
-                    className="btn btn-glass"
-                    disabled={isDeleting}
+                    className="btn--ghost"
                     onClick={() => setDeleteConfirm(null)}
+                    disabled={isDeleting}
                   >
                     Cancel
                   </button>
                   <button
                     type="button"
-                    className="btn btn-danger rounded-pill px-4 fw-bold d-inline-flex align-items-center gap-2"
-                    disabled={isDeleting}
+                    className="btn--danger"
                     onClick={() => handleDelete(deleteConfirm)}
+                    disabled={isDeleting}
                   >
                     {isDeleting ? (
                       <>

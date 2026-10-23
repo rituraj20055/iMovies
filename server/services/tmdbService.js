@@ -380,9 +380,10 @@ const syncTMDBMoviesToDatabase = async (rawTmdbList, fetchFullDetails = false) =
 
       const formatted = formatTMDBMovie(rawItem, details);
 
-      // Check if this movie was archived/deleted by admin
+      // Check if this movie was deleted or archived by admin
       const existing = await Movie.findOne({ tmdbId: rawItem.id });
       if (existing && existing.isActive === false) {
+        // Preserves admin deletion/archive! Do NOT reactivate or re-insert
         continue;
       }
 
@@ -438,8 +439,8 @@ const getLiveMarketMovies = async ({ page = 1, search = '', genre = '', language
       // Sync the top 15 movies into database so they have valid MongoDB ObjectIds and shows
       const syncedDocs = await syncTMDBMoviesToDatabase(rawList.slice(0, 18), false);
 
-      // Apply in-memory filters if needed (excluding inactive/archived movies)
-      let filtered = syncedDocs.filter((m) => m && m.isActive !== false);
+      // Apply in-memory filters if needed
+      let filtered = syncedDocs;
       if (genre && genre !== 'ALL') {
         filtered = filtered.filter((m) =>
           m.genres && m.genres.some((g) => g.toLowerCase() === genre.toLowerCase())
@@ -451,7 +452,7 @@ const getLiveMarketMovies = async ({ page = 1, search = '', genre = '', language
         );
       }
 
-      // Also fetch any custom movies added by admin directly in MongoDB (excluding inactive)
+      // Also fetch any custom movies added by admin directly in MongoDB
       const customFilter = { isActive: { $ne: false } };
       if (genre && genre !== 'ALL') customFilter.genres = { $in: [genre] };
       if (language && language !== 'ALL') customFilter.language = { $regex: language, $options: 'i' };
@@ -467,6 +468,7 @@ const getLiveMarketMovies = async ({ page = 1, search = '', genre = '', language
       const uniqueMovies = [];
       for (const m of combined) {
         if (!m || !m._id) continue;
+        if (m.isActive === false) continue;
         const idStr = String(m._id);
         const normTitle = (m.movieName || '').trim().toLowerCase();
         if (!idSet.has(idStr) && (!normTitle || !titleSet.has(normTitle))) {
@@ -484,7 +486,7 @@ const getLiveMarketMovies = async ({ page = 1, search = '', genre = '', language
     console.warn('⚠️ TMDB Live fetch error, falling back to database:', err.message);
   }
 
-  // Fallback: Query MongoDB directly with deduplication (excluding inactive)
+  // Fallback: Query MongoDB directly with deduplication
   const filter = { isActive: { $ne: false } };
   if (genre && genre !== 'ALL') filter.genres = { $in: [genre] };
   if (language && language !== 'ALL') filter.language = { $regex: language, $options: 'i' };
@@ -496,6 +498,7 @@ const getLiveMarketMovies = async ({ page = 1, search = '', genre = '', language
   const uniqueFallback = [];
   for (const m of dbMovies) {
     if (!m || !m._id) continue;
+    if (m.isActive === false) continue;
     const idStr = String(m._id);
     const normTitle = (m.movieName || '').trim().toLowerCase();
     if (!idSet.has(idStr) && (!normTitle || !titleSet.has(normTitle))) {

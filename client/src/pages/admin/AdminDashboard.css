@@ -530,217 +530,189 @@
 }
 
 /* ============================================================
-   Scoped Dark Theme Normalization for Admin Portal
-   Neutralizes Bootstrap 5 CDN global overrides in .admin-layout
+   Bookings & Transactions Admin Tables (Dark Mode Polish)
    ============================================================ */
 
-/* ── Tables ── */
-.admin-layout .table,
-.admin-table {
-  --bs-table-bg: transparent !important;
-  --bs-table-color: var(--text-primary) !important;
-  --bs-table-border-color: var(--border-subtle) !important;
-  --bs-table-accent-bg: transparent !important;
-  --bs-table-hover-bg: var(--bg-card-hover) !important;
-  --bs-table-hover-color: var(--text-primary) !important;
-  color: var(--text-primary) !important;
-  border-color: var(--border-subtle) !important;
-  background-color: transparent !important;
-  margin-bottom: 0 !important;
-  width: 100%;
-}
-
-.admin-layout .table > :not(caption) > * > *,
-.admin-table > :not(caption) > * > * {
-  background-color: transparent !important;
-  color: var(--text-primary) !important;
-  border-bottom: 1px solid var(--border-subtle) !important;
-  box-shadow: none !important;
-}
-
-.admin-layout .table-hover > tbody > tr:hover > *,
-.admin-table tbody tr:hover td {
-  background-color: var(--bg-card-hover) !important;
-}
-
-.admin-layout .table thead,
-.admin-layout .table th,
-.admin-table thead,
-.admin-table th {
-  background-color: var(--bg-surface) !important;
-  color: var(--text-secondary) !important;
-  border-bottom: 1px solid var(--border-color) !important;
-  font-weight: 600;
-  text-transform: uppercase;
-  font-size: 11px;
-  letter-spacing: 0.6px;
-}
-
-/* ── Cards & Surfaces ── */
-.admin-layout .card,
-.admin-layout .admin-card {
-  --bs-card-bg: var(--bg-card) !important;
-  --bs-card-color: var(--text-primary) !important;
-  --bs-card-border-color: var(--border-color) !important;
-  background-color: var(--bg-card) !important;
-  border: 1px solid var(--border-color) !important;
-  color: var(--text-primary) !important;
-  box-shadow: var(--shadow-card) !important;
-}
-
-/* ── Form Controls & Inputs ── */
-.admin-layout .form-control,
-.admin-layout .form-select {
-  background-color: var(--bg-surface) !important;
-  border: 1px solid var(--border-color) !important;
-  color: var(--text-primary) !important;
-}
-
-.admin-layout .form-control::placeholder {
-  color: var(--text-muted) !important;
-}
-
-.admin-layout .form-control:focus,
-.admin-layout .form-select:focus {
-  background-color: var(--bg-surface) !important;
-  border-color: var(--primary-accent) !important;
-  color: var(--text-primary) !important;
-  box-shadow: 0 0 0 3px var(--primary-accent-glow) !important;
-  outline: none !important;
-}
-
-/* ── Modals & Dialogs ── */
-.admin-layout .modal-content {
-  --bs-modal-bg: var(--bg-card) !important;
-  --bs-modal-color: var(--text-primary) !important;
-  --bs-modal-border-color: var(--border-color) !important;
-  background-color: var(--bg-card) !important;
-  color: var(--text-primary) !important;
-  border: 1px solid var(--border-color) !important;
-  box-shadow: var(--shadow-card), 0 20px 40px rgba(0, 0, 0, 0.7) !important;
-}
-
-.admin-layout .btn-close {
-  filter: invert(1) grayscale(100%) brightness(200%) !important;
-  opacity: 0.75;
-  transition: opacity 0.2s ease, transform 0.2s ease;
-}
-
-.admin-layout .btn-close:hover {
-  opacity: 1;
-  transform: scale(1.1);
-}
-
-/* ── Scoped Modal Overlay & Admin Modal ── */
-.admin-modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(8, 13, 27, 0.85);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  display: flex !important;
-  align-items: center;
-  justify-content: center;
-  z-index: 1150;
-  padding: 1.5rem;
-}
-
-.admin-modal-dialog {
-  position: relative !important;
-  display: flex !important;
-  flex-direction: column !important;
+.admin-table-container {
   background-color: var(--bg-card) !important;
   border: 1px solid var(--border-color) !important;
   border-radius: 16px !important;
-  padding: 1.75rem 2rem !important;
-  max-width: 520px;
-  width: 100%;
-  box-shadow: var(--shadow-card), 0 20px 50px rgba(0, 0, 0, 0.7) !important;
-  color: var(--text-primary);
-  opacity: 1 !important;
-  visibility: visible !important;
-  pointer-events: auto !important;
-  box-sizing: border-box;
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
-.admin-modal-dialog__header {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-bottom: 1.25rem;
+.admin-bookings-table,
+.admin-transactions-table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  background-color: var(--bg-card) !important;
+  color: var(--text-primary) !important;
+  font-size: 13.5px;
+  margin-bottom: 0 !important;
+  --bs-table-bg: transparent !important;
+  --bs-table-hover-bg: var(--bg-card-hover) !important;
+  --bs-table-color: var(--text-primary) !important;
+  --bs-table-border-color: var(--border-subtle) !important;
 }
 
-.admin-modal-dialog__icon {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: rgba(239, 68, 68, 0.15);
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  color: var(--danger, #EF4444);
-  display: flex;
+.admin-bookings-table > :not(caption) > * > *,
+.admin-transactions-table > :not(caption) > * > * {
+  background-color: transparent !important;
+  box-shadow: none !important;
+  color: inherit !important;
+  border-bottom: 1px solid var(--border-subtle) !important;
+}
+
+.admin-bookings-table thead,
+.admin-transactions-table thead {
+  background-color: var(--bg-surface) !important;
+}
+
+.admin-bookings-table thead th,
+.admin-transactions-table thead th {
+  background-color: var(--bg-surface) !important;
+  color: var(--text-secondary) !important;
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border-color) !important;
+  white-space: nowrap;
+}
+
+.admin-bookings-table tbody tr,
+.admin-transactions-table tbody tr {
+  background-color: var(--bg-card) !important;
+  transition: background-color 0.18s ease;
+}
+
+.admin-bookings-table tbody tr:hover,
+.admin-transactions-table tbody tr:hover {
+  background-color: var(--bg-card-hover) !important;
+}
+
+.admin-bookings-table tbody tr:last-child td,
+.admin-transactions-table tbody tr:last-child td {
+  border-bottom: none !important;
+}
+
+.admin-bookings-table td,
+.admin-transactions-table td {
+  padding: 14px 16px;
+  color: var(--text-primary) !important;
+  vertical-align: middle;
+  border-bottom: 1px solid var(--border-subtle) !important;
+}
+
+/* Seat chips */
+.admin-seat-chip {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.15rem;
-  flex-shrink: 0;
-}
-
-.admin-modal-dialog__title {
-  font-size: 1.25rem;
-  font-weight: 700;
-  margin: 0;
+  padding: 2px 7px;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-family: 'SF Mono', Menlo, Consolas, Monaco, monospace;
+  font-size: 11.5px;
+  font-weight: 600;
   color: var(--text-primary);
+  white-space: nowrap;
 }
 
-.admin-modal-dialog__actions {
+/* Pagination controls */
+.admin-pagination {
   display: flex;
-  justify-content: flex-end;
   align-items: center;
-  gap: 0.75rem;
-  margin-top: 1.25rem;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background-color: var(--bg-card);
+  border-top: 1px solid var(--border-color);
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
-/* ── Aurora Action Buttons ── */
-.admin-layout .btn-aurora {
-  background: var(--aurora-gradient) !important;
-  color: #ffffff !important;
-  border: none !important;
-  box-shadow: 0 4px 14px var(--primary-accent-glow) !important;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+.admin-pagination__info {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.admin-pagination__nav {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.admin-pagination__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 34px;
+  height: 34px;
+  padding: 0 10px;
+  border-radius: 8px;
+  font-size: 13px;
   font-weight: 600;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-.admin-layout .btn-aurora:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 20px var(--primary-accent-glow) !important;
+.admin-pagination__btn:hover:not(:disabled) {
+  background: var(--bg-card-hover);
+  color: var(--text-primary);
+  border-color: var(--primary-accent);
+}
+
+.admin-pagination__btn.active {
+  background: var(--aurora-gradient);
   color: #ffffff !important;
-}
-
-.admin-layout .btn-glass {
-  background: var(--bg-surface) !important;
-  color: var(--text-secondary) !important;
-  border: 1px solid var(--border-color) !important;
-  transition: all 0.2s ease !important;
-  font-weight: 500;
-}
-
-.admin-layout .btn-glass:hover {
-  background: var(--bg-card-hover) !important;
-  color: var(--text-primary) !important;
-  border-color: var(--primary-accent) !important;
-}
-
-.admin-layout .btn-outline-aurora {
-  background: transparent !important;
-  border: 1.5px solid var(--primary-accent) !important;
-  color: var(--primary-accent) !important;
-  font-weight: 600;
-  transition: all 0.2s ease !important;
-}
-
-.admin-layout .btn-outline-aurora:hover {
-  background: var(--aurora-gradient) !important;
-  color: #ffffff !important;
-  box-shadow: 0 4px 14px var(--primary-accent-glow) !important;
   border-color: transparent !important;
+  box-shadow: 0 2px 8px var(--primary-accent-glow);
+}
+
+.admin-pagination__btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* Scoped modal overlay for transactions refund */
+.admin-modal-overlay {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 2000 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background-color: rgba(8, 13, 27, 0.85) !important;
+  backdrop-filter: blur(8px) !important;
+  padding: 16px;
+}
+
+.admin-modal-card {
+  background-color: var(--bg-card) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6) !important;
+  max-width: 520px;
+  width: 100%;
+  color: var(--text-primary) !important;
+  overflow: hidden;
+  animation: adminModalFadeIn 0.2s ease-out;
+}
+
+@keyframes adminModalFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 

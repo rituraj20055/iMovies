@@ -1,8 +1,4 @@
 const Movie = require('../models/movieModel');
-const Booking = require('../models/bookingModel');
-const Show = require('../models/showModel');
-const Favorite = require('../models/favoriteModel');
-const Review = require('../models/reviewModel');
 const tmdbService = require('../services/tmdbService');
 const { normalizeTitle } = require('../utils/dedupMovies');
 
@@ -188,50 +184,80 @@ const updateMovie = async (req, res) => {
 
 const deleteMovie = async (req, res) => {
   try {
-    const movieId = req.params.id;
-    const movie = await Movie.findById(movieId);
+    const { id } = req.params;
+    const movie = await Movie.findById(id);
     if (!movie) {
       return res.status(404).json({ success: false, message: 'Movie not found.' });
     }
 
-    // Check if there are existing bookings associated with this movie
-    const bookingCount = await Booking.countDocuments({
-      $or: [{ movieId: movieId }, { movieId: String(movie._id) }]
+    const movieIdStr = String(movie._id);
+
+    // 1. Check if the movie is referenced by customer bookings
+    const Booking = require('../models/bookingModel');
+    const hasBookings = await Booking.exists({
+      movieId: movieIdStr,
+      paymentStatus: { $in: ['Completed', 'Confirmed', 'Pending'] },
     });
 
-    if (bookingCount > 0) {
-      // Soft-delete / Archive pattern: protect financial and booking history records
+    const Show = require('../models/showModel');
+    const existingShows = await Show.find({ movieId: movieIdStr });
+
+    if (hasBookings) {
+      // Data Integrity: Never delete financial records or active customer bookings!
+      // Safely archive the movie by marking it inactive, preventing new bookings
       movie.isActive = false;
       await movie.save();
 
-      // Deactivate scheduled shows for this movie to prevent new bookings
-      await Show.updateMany(
-        { $or: [{ movieId: movieId }, { movieId: String(movie._id) }] },
-        { $set: { isActive: false } }
-      );
+      // Deactivate upcoming shows that have no bookings
+      for (const show of existingShows) {
+        const hasShowBookings = await Booking.exists({
+          showId: show.showId,
+          paymentStatus: { $in: ['Completed', 'Confirmed'] },
+        });
+        if (!hasShowBookings) {
+          show.isActive = false;
+          await show.save();
+        }
+      }
 
       return res.json({
         success: true,
-        message: `Movie "${movie.movieName}" has ${bookingCount} existing booking(s). It was safely archived from the active catalogue to preserve historical booking records.`,
+        message: `Movie "${movie.movieName}" has active booking history. It was safely archived and removed from the active catalogue while preserving customer reservations.`,
         archived: true,
+        movieId: movie._id,
       });
     }
 
-    // No existing bookings: safe to completely remove
-    await Movie.findByIdAndDelete(movieId);
+    // 2. If there are NO customer bookings, remove any unsold shows
+    if (existingShows.length > 0) {
+      await Show.deleteMany({ movieId: movieIdStr });
+    }
 
-    // Clean up empty shows, favorites, and reviews
-    await Show.deleteMany({ $or: [{ movieId: movieId }, { movieId: String(movie._id) }] });
-    await Favorite.deleteMany({ movieId: movieId });
-    await Review.deleteMany({ movieId: movieId });
+    // Clean up favorites and reviews
+    const Favorite = require('../models/favoriteModel');
+    const Review = require('../models/reviewModel');
+    await Promise.allSettled([
+      Favorite.deleteMany({ movieId: movieIdStr }),
+      Review.deleteMany({ movieId: movieIdStr }),
+    ]);
+
+    // If the movie has a tmdbId, mark it inactive so TMDB sync won't recreate it on the next fetch
+    if (movie.tmdbId) {
+      movie.isActive = false;
+      await movie.save();
+    } else {
+      // Custom movie added by admin without TMDB ID: hard delete
+      await Movie.findByIdAndDelete(id);
+    }
 
     res.json({
       success: true,
       message: `Movie "${movie.movieName}" deleted successfully.`,
+      movieId: movie._id,
     });
   } catch (err) {
-    console.error('deleteMovie error:', err);
-    res.status(500).json({ success: false, message: err.message || 'Failed to delete movie.' });
+    console.error('deleteMovie error:', err.message);
+    res.status(500).json({ success: false, message: err.message });
   }
 };
 

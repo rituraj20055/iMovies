@@ -33,12 +33,14 @@ api.interceptors.request.use(
     const adminToken = localStorage.getItem('adminToken');
 
     const url = config.url || '';
+    const method = (config.method || 'get').toLowerCase();
     const isAdminEndpoint =
       url.startsWith('/admin') ||
       url.startsWith('admin') ||
       url.includes('/admin/') ||
       url === '/auth/admin/validate' ||
-      url.includes('/admin');
+      url.includes('/admin') ||
+      (Boolean(adminToken) && (method === 'delete' || method === 'post' || method === 'put') && (url.includes('/movie') || url.includes('/theatre') || url.includes('/shows')));
 
     const token = isAdminEndpoint
       ? (adminToken || userToken)
