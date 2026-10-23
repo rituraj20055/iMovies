@@ -3,7 +3,8 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
 const Admin = require('../models/adminModel');
 
-const generateToken = (payload) => jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '7d' });
+const JWT_SECRET = process.env.JWT_SECRET || 'imovies_super_secret_jwt_key_2024';
+const generateToken = (payload) => jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' });
 
 // ─── USER AUTH ────────────────────────────────────────────────────────────────
 

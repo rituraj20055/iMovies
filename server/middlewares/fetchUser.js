@@ -13,11 +13,13 @@ const extractToken = (req) => {
   return token;
 };
 
+const JWT_SECRET = process.env.JWT_SECRET || 'imovies_super_secret_jwt_key_2024';
+
 const fetchUser = (req, res, next) => {
   const token = extractToken(req);
   if (!token) return res.status(401).json({ success: false, message: 'Access denied. No token provided.' });
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, JWT_SECRET);
     req.user = decoded;
     next();
   } catch (err) {
@@ -29,7 +31,7 @@ const fetchAdmin = (req, res, next) => {
   const token = extractToken(req);
   if (!token) return res.status(401).json({ success: false, message: 'Access denied. No token provided.' });
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, JWT_SECRET);
     if (!decoded.isAdmin) return res.status(403).json({ success: false, message: 'Admin access required.' });
     req.user = decoded;
     next();

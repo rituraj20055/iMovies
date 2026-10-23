@@ -47,8 +47,9 @@ const fetchAdmin = async (req, res, next) => {
 
   // ── 4. Verify token integrity and expiry ────────────────────────────────
   let decoded;
+  const JWT_SECRET = process.env.JWT_SECRET || 'imovies_super_secret_jwt_key_2024';
   try {
-    decoded = jwt.verify(token, process.env.JWT_SECRET);
+    decoded = jwt.verify(token, JWT_SECRET);
   } catch (err) {
     return res.status(403).json({
       success: false,

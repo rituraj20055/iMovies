@@ -1,6 +1,27 @@
 import axios from 'axios'
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || '/api'
+/**
+ * Normalizes backend base URL.
+ * Automatically ensures full origin URLs (like https://imovies-backend-7ev8.onrender.com)
+ * include the required /api prefix without double-prefixing.
+ */
+const getBaseUrl = () => {
+  let url = import.meta.env.VITE_API_URL || import.meta.env.VITE_BACKEND_URL || '/api';
+  if (!url || typeof url !== 'string') return '/api';
+  url = url.trim().replace(/\/+$/, '');
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+    if (!url.endsWith('/api')) {
+      url = `${url}/api`;
+    }
+  } else if (url !== '' && !url.startsWith('/api') && url !== '/') {
+    url = `/api/${url.replace(/^\/+/, '')}`;
+  } else if (!url) {
+    url = '/api';
+  }
+  return url;
+};
+
+const API_BASE_URL = getBaseUrl();
 
 /**
  * Configured Axios instance for all iMovies API calls.
