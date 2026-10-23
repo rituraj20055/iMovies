@@ -1,4 +1,6 @@
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '.env') });
+
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
@@ -31,9 +33,6 @@ app.use(cors({ origin: process.env.CLIENT_URL || 'http://localhost:5173', creden
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
-// ─── Database Connection with Auto Fallback ───────────────────────────────────
-connectDB();
-
 // ─── Socket.io ───────────────────────────────────────────────────────────────
 io.on('connection', (socket) => {
   console.log(`🔌 Client connected: ${socket.id}`);
@@ -55,7 +54,12 @@ app.use('/api/payment',  paymentRoutes);
 app.use('/api/admin',    adminRoutes);
 
 // Health check
-app.get('/api/health', (_, res) => res.json({ success: true, message: 'iMovies API is running 🎬' }));
+app.get('/api/health', (_, res) => res.json({
+  success: true,
+  message: 'iMovies API is running 🎬',
+  dbState: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
+  dbHost: mongoose.connection.host || 'unknown',
+}));
 
 // 404 handler
 app.use((req, res) => res.status(404).json({ success: false, message: 'Route not found.' }));
@@ -70,8 +74,23 @@ app.use((err, req, res, next) => {
 cron.schedule('*/5 * * * *',  () => { releaseExpiredLocks(); });  // Cleanup every 5 min
 cron.schedule('*/10 * * * *', () => { sendShowReminders(); });    // Reminders every 10 min
 
-// ─── Start Server ─────────────────────────────────────────────────────────────
+// ─── Database Connection & Server Initialization ───────────────────────────────
 const PORT = process.env.PORT || 5050;
-server.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
 
-module.exports = { app, io };
+async function startServer() {
+  try {
+    // Connect to database before accepting incoming HTTP requests
+    await connectDB();
+
+    server.listen(PORT, () => {
+      console.log(`🚀 iMovies Server running on http://localhost:${PORT}`);
+    });
+  } catch (err) {
+    console.error('❌ Fatal error: Server startup aborted due to database connection failure:', err.message);
+    process.exit(1);
+  }
+}
+
+startServer();
+
+module.exports = { app, io, server };
