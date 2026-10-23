@@ -84,7 +84,7 @@ const SeatSlugPage = () => {
 
   // Setup Socket.io real-time connection
   useEffect(() => {
-    const socketUrl = window.location.origin;
+    const socketUrl = import.meta.env.VITE_SOCKET_URL || window.location.origin;
     const socket = io(socketUrl, {
       path: '/socket.io',
       transports: ['websocket', 'polling'],
@@ -277,7 +277,7 @@ const SeatSlugPage = () => {
 
       // Step 4 — Open Razorpay Checkout modal
       const options = {
-        key: keyId || 'rzp_test_TqTzbIAfhLKF63',
+        key: keyId || import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_TqTzbIAfhLKF63',
         amount: order.amount,
         currency: order.currency || 'INR',
         name: 'iMovies Cinema Booking',
