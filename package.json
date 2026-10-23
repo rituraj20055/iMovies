@@ -1,0 +1,16 @@
+{
+  "name": "imovies",
+  "version": "1.0.0",
+  "description": "iMovies - Movie Ticket Booking Web Application",
+  "scripts": {
+    "server": "cd server && npm run dev",
+    "client": "cd client && npm run dev",
+    "dev": "node start-all.js",
+    "start": "node start-all.js",
+    "build": "cd client && npm run build",
+    "test": "cd server && npm test"
+  },
+  "keywords": ["movie", "ticket", "booking", "react", "express", "mongodb"],
+  "author": "iMovies Team",
+  "license": "ISC"
+}

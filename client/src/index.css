@@ -1,0 +1,1055 @@
+/* ==========================================================================
+   iMovies – Midnight Aurora Cinema Design System
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Theme Variables (Midnight Aurora Palette: Dark Mode & Light Mode)
+   -------------------------------------------------------------------------- */
+:root,
+[data-theme="dark"] {
+  /* Midnight Aurora Dark Mode (Default) */
+  --bg-primary: #080D1B;              /* Main background */
+  --bg-secondary: #0D1527;            /* Secondary navy background */
+  --bg-card: #111A2E;                 /* Card surfaces */
+  --bg-card-hover: #17233A;           /* Card hover elevation */
+  --bg-surface: #17233A;              /* Elevated surfaces */
+  --bg-surface-elevated: #1F2E4A;     /* Higher elevated surfaces & modals */
+  --bg-glass: rgba(8, 13, 27, 0.92);  /* Glassmorphism background */
+
+  /* Text Colors */
+  --text-primary: #F4F7FF;            /* Primary text */
+  --text-secondary: #A6B2CC;          /* Secondary text */
+  --text-muted: #64748B;              /* Tertiary grey */
+
+  /* Aurora Accent System */
+  --primary-accent: #36D9FF;          /* Cyan accent */
+  --primary-accent-hover: #1DC8F3;    /* Hover cyan */
+  --primary-accent-glow: rgba(54, 217, 255, 0.35);
+  --secondary-accent: #8B5CF6;        /* Violet accent */
+  --secondary-accent-hover: #7C3AED;  /* Deep violet */
+  --secondary-accent-glow: rgba(139, 92, 246, 0.35);
+
+  --aurora-gradient: linear-gradient(135deg, #36D9FF 0%, #8B5CF6 100%);
+  --aurora-gradient-subtle: linear-gradient(135deg, rgba(54, 217, 255, 0.15) 0%, rgba(139, 92, 246, 0.15) 100%);
+
+  /* Borders & Shadows */
+  --border-color: #293650;            /* Precise dark border */
+  --border-subtle: rgba(41, 54, 80, 0.6);
+  --border-active: #36D9FF;
+
+  --accent-gold: #F59E0B;
+  --success: #10B981;
+  --warning: #F59E0B;
+  --danger: #EF4444;
+
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 6px 20px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.65);
+  --shadow-card: 0 8px 24px rgba(0, 0, 0, 0.45);
+  --shadow-glow: 0 0 25px rgba(54, 217, 255, 0.25);
+
+  --hero-overlay-start: rgba(8, 13, 27, 0.98);
+  --hero-overlay-mid: rgba(8, 13, 27, 0.70);
+  --hero-overlay-end: rgba(8, 13, 27, 0.15);
+  --badge-bg: rgba(255, 255, 255, 0.08);
+
+  /* Compatibility bindings (replaces legacy red accents with Aurora cyan) */
+  --primary-red: var(--primary-accent);
+  --primary-red-hover: var(--primary-accent-hover);
+  --primary-red-glow: var(--primary-accent-glow);
+  --dark-bg: var(--bg-primary);
+  --dark-card: var(--bg-card);
+  --dark-surface: var(--bg-surface);
+  --dark-border: var(--border-color);
+  --shadow-red: var(--shadow-glow);
+}
+
+[data-theme="light"] {
+  /* Aurora Cinema Light Mode */
+  --bg-primary: #F3F6FC;              /* Main background */
+  --bg-secondary: #EAF0F8;            /* Secondary container background */
+  --bg-card: #FFFFFF;                 /* Card background */
+  --bg-card-hover: #F8FAFD;           /* Slight lift on hover */
+  --bg-surface: #EAF0F8;              /* Subtle surface background */
+  --bg-surface-elevated: #DCE4F0;     /* Elevated elements */
+  --bg-glass: rgba(243, 246, 252, 0.94);
+
+  /* Text Colors */
+  --text-primary: #17233D;            /* Primary text */
+  --text-secondary: #63718A;          /* Secondary text */
+  --text-muted: #8E9BAE;              /* Tertiary grey */
+
+  /* Aurora Accent System (Light Mode Variant) */
+  --primary-accent: #087EA4;          /* Primary accent (deep cyan) */
+  --primary-accent-hover: #066989;    /* Hover deep cyan */
+  --primary-accent-glow: rgba(8, 126, 164, 0.25);
+  --secondary-accent: #7455D9;        /* Secondary accent (violet) */
+  --secondary-accent-hover: #5F40BD;  /* Deep violet */
+  --secondary-accent-glow: rgba(116, 85, 217, 0.25);
+
+  --aurora-gradient: linear-gradient(135deg, #087EA4 0%, #7455D9 100%);
+  --aurora-gradient-subtle: linear-gradient(135deg, rgba(8, 126, 164, 0.10) 0%, rgba(116, 85, 217, 0.10) 100%);
+
+  /* Borders & Shadows */
+  --border-color: #DCE4F0;            /* Crisp borders */
+  --border-subtle: rgba(220, 228, 240, 0.7);
+  --border-active: #087EA4;
+
+  --accent-gold: #D97706;
+  --success: #059669;
+  --warning: #D97706;
+  --danger: #DC2626;
+
+  --shadow-sm: 0 2px 8px rgba(23, 35, 61, 0.05);
+  --shadow-md: 0 4px 16px rgba(23, 35, 61, 0.08);
+  --shadow-lg: 0 10px 30px rgba(23, 35, 61, 0.12);
+  --shadow-card: 0 4px 20px rgba(23, 35, 61, 0.06);
+  --shadow-glow: 0 0 20px rgba(8, 126, 164, 0.15);
+
+  --hero-overlay-start: rgba(243, 246, 252, 0.98);
+  --hero-overlay-mid: rgba(243, 246, 252, 0.75);
+  --hero-overlay-end: rgba(243, 246, 252, 0.15);
+  --badge-bg: #EAF0F8;
+
+  /* Compatibility bindings */
+  --primary-red: var(--primary-accent);
+  --primary-red-hover: var(--primary-accent-hover);
+  --primary-red-glow: var(--primary-accent-glow);
+  --dark-bg: var(--bg-primary);
+  --dark-card: var(--bg-card);
+  --dark-surface: var(--bg-surface);
+  --dark-border: var(--border-color);
+  --shadow-red: var(--shadow-glow);
+}
+
+/* --------------------------------------------------------------------------
+   2. Global Reset, Typography & Layout
+   -------------------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--text-primary);
+}
+
+p {
+  color: var(--text-secondary);
+}
+
+a {
+  color: var(--primary-accent);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+a:hover {
+  color: var(--primary-accent-hover);
+}
+
+/* --------------------------------------------------------------------------
+   3. Custom Scrollbars
+   -------------------------------------------------------------------------- */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary-accent);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-accent-hover);
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* --------------------------------------------------------------------------
+   4. Buttons & Interactive Elements (Aurora Themed)
+   -------------------------------------------------------------------------- */
+.btn-cyan {
+  background: var(--primary-accent) !important;
+  color: #080D1B !important;
+  border: none !important;
+  border-radius: 9999px;
+  padding: 0.55rem 1.3rem;
+  font-weight: 700;
+  font-size: 0.92rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 15px var(--primary-accent-glow);
+}
+
+[data-theme="light"] .btn-cyan {
+  color: #FFFFFF !important;
+}
+
+.btn-cyan:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+  box-shadow: 0 6px 22px var(--primary-accent-glow);
+  color: #080D1B !important;
+}
+
+[data-theme="light"] .btn-cyan:hover {
+  color: #FFFFFF !important;
+}
+
+.btn-violet {
+  background: var(--secondary-accent) !important;
+  color: #FFFFFF !important;
+  border: none !important;
+  border-radius: 9999px;
+  padding: 0.55rem 1.3rem;
+  font-weight: 700;
+  font-size: 0.92rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 15px var(--secondary-accent-glow);
+}
+
+.btn-violet:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.12);
+  box-shadow: 0 6px 22px var(--secondary-accent-glow);
+  color: #FFFFFF !important;
+}
+
+.btn-aurora,
+.btn-red {
+  background: var(--aurora-gradient) !important;
+  color: #FFFFFF !important;
+  border: none !important;
+  border-radius: 9999px;
+  padding: 0.6rem 1.4rem;
+  font-weight: 600;
+  font-size: 0.92rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 15px var(--primary-accent-glow);
+}
+
+.btn-aurora:hover,
+.btn-red:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 22px var(--primary-accent-glow);
+  filter: brightness(1.08);
+  color: #FFFFFF !important;
+}
+
+.btn-aurora:active,
+.btn-red:active {
+  transform: translateY(0);
+}
+
+.btn-outline-aurora,
+.btn-outline-red {
+  background: transparent !important;
+  color: var(--primary-accent) !important;
+  border: 1.5px solid var(--primary-accent) !important;
+  border-radius: 9999px;
+  padding: 0.55rem 1.35rem;
+  font-weight: 600;
+  font-size: 0.92rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.btn-outline-aurora:hover,
+.btn-outline-red:hover {
+  background: var(--aurora-gradient) !important;
+  color: #FFFFFF !important;
+  border-color: transparent !important;
+  box-shadow: 0 4px 16px var(--primary-accent-glow);
+  transform: translateY(-2px);
+}
+
+.btn-glass {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-color);
+  border-radius: 9999px;
+  padding: 0.6rem 1.4rem;
+  font-weight: 600;
+  font-size: 0.92rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+[data-theme="light"] .btn-glass {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.btn-glass:hover {
+  background: rgba(54, 217, 255, 0.12);
+  border-color: var(--primary-accent);
+  color: var(--primary-accent) !important;
+  transform: translateY(-2px);
+}
+
+[data-theme="light"] .btn-glass:hover {
+  background: rgba(8, 126, 164, 0.08);
+  border-color: var(--primary-accent);
+  color: var(--primary-accent) !important;
+}
+
+/* --------------------------------------------------------------------------
+   5. OTT Movie Row Carousel Styles
+   -------------------------------------------------------------------------- */
+.movie-row-container {
+  position: relative;
+  margin-bottom: 2.75rem;
+}
+
+.movie-row-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.movie-row-title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.movie-row-indicator {
+  width: 4px;
+  height: 22px;
+  background: var(--aurora-gradient);
+  border-radius: 2px;
+  box-shadow: 0 0 10px var(--primary-accent-glow);
+}
+
+.movie-row-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.movie-row-scroll {
+  display: flex;
+  gap: 1.25rem;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 0.75rem 0.25rem 1.5rem;
+  -webkit-overflow-scrolling: touch;
+}
+
+.movie-row-scroll::-webkit-scrollbar {
+  height: 5px;
+}
+
+.movie-row-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.movie-row-scroll::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 9999px;
+}
+
+.movie-row-scroll::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-accent);
+}
+
+.movie-row-arrow {
+  position: absolute;
+  top: 55%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0.92;
+}
+
+.movie-row-arrow:hover {
+  background: var(--aurora-gradient);
+  color: #fff;
+  border-color: transparent;
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 0 18px var(--primary-accent-glow);
+  opacity: 1;
+}
+
+.movie-row-arrow.left {
+  left: -20px;
+}
+
+.movie-row-arrow.right {
+  right: -20px;
+}
+
+@media (max-width: 768px) {
+  .movie-row-arrow {
+    display: none !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   6. Elevated Movie Card (Midnight Aurora)
+   -------------------------------------------------------------------------- */
+.ott-movie-card {
+  flex: 0 0 220px;
+  width: 220px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s ease, border-color 0.25s ease;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+[data-theme="light"] .ott-movie-card {
+  background-color: #FFFFFF !important;
+  border-color: #DCE4F0 !important;
+  box-shadow: 0 4px 16px rgba(23, 35, 61, 0.06);
+}
+
+[data-theme="light"] .ott-movie-card__body {
+  background-color: #FFFFFF !important;
+}
+
+.ott-movie-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: var(--shadow-card), 0 0 25px var(--primary-accent-glow);
+  border-color: var(--primary-accent);
+  z-index: 5;
+}
+
+[data-theme="light"] .ott-movie-card:hover {
+  box-shadow: 0 10px 30px rgba(23, 35, 61, 0.12), 0 0 20px rgba(8, 126, 164, 0.2);
+  border-color: #087EA4 !important;
+}
+
+.ott-movie-card__poster-box {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  height: auto;
+  background-color: var(--bg-secondary);
+  overflow: hidden;
+}
+
+.ott-movie-card__poster {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.ott-movie-card:hover .ott-movie-card__poster {
+  transform: scale(1.06);
+}
+
+.ott-movie-card__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, var(--bg-card) 0%, rgba(8, 13, 27, 0.35) 60%, transparent 100%);
+  opacity: 0.85;
+  transition: opacity 0.3s ease;
+}
+
+.ott-movie-card:hover .ott-movie-card__overlay {
+  opacity: 0.95;
+}
+
+.ott-movie-card__body {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  background-color: var(--bg-card);
+}
+
+.ott-movie-card__title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.35rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color 0.2s ease;
+}
+
+.ott-movie-card:hover .ott-movie-card__title {
+  color: var(--primary-accent);
+}
+
+.ott-movie-card__genres {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.75rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ott-movie-card__footer {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 0.65rem;
+  border-top: 1px solid var(--border-subtle);
+}
+
+/* --------------------------------------------------------------------------
+   7. Cinematic Hero Section
+   -------------------------------------------------------------------------- */
+.ott-hero-billboard {
+  position: relative;
+  min-height: 520px;
+  display: flex;
+  align-items: center;
+  background-size: cover;
+  background-position: center 25%;
+  overflow: hidden;
+  margin-bottom: 2.5rem;
+  transition: background-image 0.6s ease-in-out;
+}
+
+.ott-hero-gradient-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to right, var(--hero-overlay-start) 0%, var(--hero-overlay-mid) 50%, var(--hero-overlay-end) 100%),
+    linear-gradient(to top, var(--bg-primary) 0%, rgba(0, 0, 0, 0.2) 50%, transparent 100%);
+}
+
+.ott-hero-content {
+  position: relative;
+  z-index: 2;
+  padding: 3rem 0;
+}
+
+/* --------------------------------------------------------------------------
+   8. Search & Filters Bar
+   -------------------------------------------------------------------------- */
+.ott-filter-bar {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 1.25rem;
+  margin-bottom: 2.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.ott-search-input {
+  background: var(--bg-surface) !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-primary) !important;
+  border-radius: 9999px !important;
+  padding: 0.65rem 1.25rem 0.65rem 2.85rem !important;
+  font-size: 0.95rem !important;
+  transition: all 0.2s ease !important;
+}
+
+.ott-search-input:focus {
+  border-color: var(--primary-accent) !important;
+  box-shadow: 0 0 0 3px var(--primary-accent-glow) !important;
+  outline: none !important;
+}
+
+.ott-search-input::placeholder {
+  color: var(--text-muted) !important;
+}
+
+.ott-genre-pill {
+  border: 1px solid var(--border-color);
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  border-radius: 9999px;
+  padding: 0.35rem 0.95rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.ott-genre-pill:hover {
+  background: var(--bg-card-hover);
+  color: var(--text-primary);
+  border-color: var(--primary-accent);
+}
+
+.ott-genre-pill.active {
+  background: var(--aurora-gradient) !important;
+  color: #FFFFFF !important;
+  border-color: transparent !important;
+  box-shadow: 0 2px 10px var(--primary-accent-glow);
+}
+
+/* --------------------------------------------------------------------------
+   9. Seat Selection Grid
+   -------------------------------------------------------------------------- */
+.seat-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+}
+
+.seat {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.68rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+  user-select: none;
+}
+
+.seat:hover:not(.seat-booked):not(.seat-locked) {
+  transform: scale(1.15);
+}
+
+/* Balcony – Gold/Amber */
+.seat-balcony {
+  background: rgba(245, 158, 11, 0.15);
+  border-color: var(--accent-gold);
+  color: var(--accent-gold);
+}
+
+.seat-balcony:hover:not(.seat-booked):not(.seat-locked) {
+  background: rgba(245, 158, 11, 0.3);
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+}
+
+/* Middle – Aurora Cyan */
+.seat-middle {
+  background: rgba(54, 217, 255, 0.15);
+  border-color: var(--primary-accent);
+  color: var(--primary-accent);
+}
+
+.seat-middle:hover:not(.seat-booked):not(.seat-locked) {
+  background: rgba(54, 217, 255, 0.3);
+  box-shadow: 0 0 10px var(--primary-accent-glow);
+}
+
+/* Lower – Violet */
+.seat-lower {
+  background: rgba(139, 92, 246, 0.15);
+  border-color: var(--secondary-accent);
+  color: var(--secondary-accent);
+}
+
+.seat-lower:hover:not(.seat-booked):not(.seat-locked) {
+  background: rgba(139, 92, 246, 0.3);
+  box-shadow: 0 0 10px var(--secondary-accent-glow);
+}
+
+/* Locked – Muted */
+.seat-locked {
+  background: rgba(100, 116, 139, 0.15);
+  border-color: var(--text-muted);
+  color: var(--text-muted);
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Booked – Red strikethrough */
+.seat-booked {
+  background: rgba(239, 68, 68, 0.18);
+  border-color: var(--danger);
+  color: var(--danger);
+  cursor: not-allowed;
+  text-decoration: line-through;
+  opacity: 0.65;
+}
+
+/* Selected – Aurora Cyan Pulsing Glow */
+.seat-selected {
+  background: var(--aurora-gradient) !important;
+  border-color: transparent !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 0 14px var(--primary-accent);
+  animation: seat-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes seat-pulse {
+  0%, 100% {
+    box-shadow: 0 0 8px var(--primary-accent-glow);
+  }
+  50% {
+    box-shadow: 0 0 20px var(--primary-accent);
+  }
+}
+
+.screen-bar {
+  width: 65%;
+  height: 6px;
+  background: linear-gradient(90deg, transparent, var(--primary-accent), var(--secondary-accent), transparent);
+  border-radius: 3px;
+  margin: 0 auto 0.5rem;
+}
+
+.screen-label {
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+}
+
+/* --------------------------------------------------------------------------
+   10. Glass Navbar & Form Controls
+   -------------------------------------------------------------------------- */
+.navbar-glass {
+  background: var(--bg-glass) !important;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+  transition: background-color 0.25s ease, border-color 0.25s ease;
+}
+
+.form-control-dark {
+  background: var(--bg-surface) !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-primary) !important;
+  border-radius: 10px !important;
+  padding: 0.65rem 1rem;
+  font-size: 0.92rem;
+  transition: all 0.2s ease;
+}
+
+.form-control-dark:focus {
+  border-color: var(--primary-accent) !important;
+  box-shadow: 0 0 0 3px var(--primary-accent-glow) !important;
+  outline: none;
+}
+
+.form-control-dark::placeholder {
+  color: var(--text-muted);
+}
+
+.form-label-dark {
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+  font-weight: 500;
+  margin-bottom: 0.4rem;
+}
+
+/* Universal Form Control Styling */
+.form-control,
+.form-select {
+  background-color: var(--bg-surface) !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-primary) !important;
+  border-radius: 10px;
+  font-size: 0.92rem;
+  transition: all 0.2s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+  background-color: var(--bg-card) !important;
+  border-color: var(--primary-accent) !important;
+  color: var(--text-primary) !important;
+  box-shadow: 0 0 0 3px var(--primary-accent-glow) !important;
+  outline: none;
+}
+
+.form-control::placeholder {
+  color: var(--text-muted) !important;
+  opacity: 0.85;
+}
+
+/* Light Mode Specific Clarity Enhancements */
+[data-theme="light"] .form-control,
+[data-theme="light"] .form-select,
+[data-theme="light"] .form-control-dark {
+  background-color: #FFFFFF !important;
+  border-color: #DCE4F0 !important;
+  color: #17233D !important;
+}
+
+[data-theme="light"] .form-control:focus,
+[data-theme="light"] .form-select:focus,
+[data-theme="light"] .form-control-dark:focus {
+  background-color: #FFFFFF !important;
+  border-color: #087EA4 !important;
+  box-shadow: 0 0 0 3px rgba(8, 126, 164, 0.2) !important;
+}
+
+[data-theme="light"] .card {
+  background-color: #FFFFFF !important;
+  border-color: #DCE4F0 !important;
+  box-shadow: 0 4px 20px rgba(23, 35, 61, 0.06);
+}
+
+[data-theme="light"] .admin-card {
+  background-color: #FFFFFF !important;
+  border-color: #DCE4F0 !important;
+  box-shadow: 0 4px 20px rgba(23, 35, 61, 0.05);
+}
+
+[data-theme="light"] .ott-filter-bar {
+  background-color: #FFFFFF !important;
+  border-color: #DCE4F0 !important;
+}
+
+[data-theme="light"] .ott-genre-pill {
+  background-color: #EAF0F8 !important;
+  border-color: #DCE4F0 !important;
+  color: #63718A !important;
+}
+
+[data-theme="light"] .ott-genre-pill:hover {
+  background-color: #FFFFFF !important;
+  color: #17233D !important;
+  border-color: #087EA4 !important;
+}
+
+[data-theme="light"] .badge-ott {
+  background-color: #EAF0F8 !important;
+  border-color: #DCE4F0 !important;
+  color: #17233D !important;
+}
+
+[data-theme="light"] .bg-dark,
+[data-theme="light"] .bg-black {
+  background-color: var(--bg-surface) !important;
+}
+
+[data-theme="light"] .border-secondary {
+  border-color: var(--border-color) !important;
+}
+
+[data-theme="light"] .admin-sidebar {
+  background-color: #FFFFFF !important;
+  border-color: #DCE4F0 !important;
+  box-shadow: 2px 0 16px rgba(23, 35, 61, 0.06);
+}
+
+/* --------------------------------------------------------------------------
+   11. Cinema Spinner Loader
+   -------------------------------------------------------------------------- */
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-glass);
+  backdrop-filter: blur(8px);
+  z-index: 9999;
+}
+
+.cinema-spinner {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: conic-gradient(var(--primary-accent) 0%, var(--secondary-accent) 40%, transparent 70%);
+  animation: spin 0.9s linear infinite;
+  position: relative;
+}
+
+.cinema-spinner::before {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border-radius: 50%;
+  background: var(--bg-primary);
+}
+
+.cinema-spinner::after {
+  content: '🎬';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-text {
+  margin-top: 1rem;
+  color: var(--primary-accent);
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: 0.05em;
+}
+
+/* --------------------------------------------------------------------------
+   12. Badges (Aurora Themed)
+   -------------------------------------------------------------------------- */
+.badge-ott {
+  background: var(--badge-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.65rem;
+  border-radius: 9999px;
+}
+
+.badge-ott-cyan,
+.badge-ott-red {
+  background: rgba(54, 217, 255, 0.15) !important;
+  border: 1px solid rgba(54, 217, 255, 0.35) !important;
+  color: var(--primary-accent) !important;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.25rem 0.65rem;
+  border-radius: 9999px;
+}
+
+[data-theme="light"] .badge-ott-cyan,
+[data-theme="light"] .badge-ott-red {
+  background: rgba(8, 126, 164, 0.12) !important;
+  border-color: rgba(8, 126, 164, 0.3) !important;
+  color: var(--primary-accent) !important;
+}
+
+.badge-ott-violet {
+  background: rgba(139, 92, 246, 0.15);
+  border: 1px solid rgba(139, 92, 246, 0.35);
+  color: var(--secondary-accent);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.25rem 0.65rem;
+  border-radius: 9999px;
+}
+
+.badge-ott-gold {
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  color: var(--accent-gold);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.25rem 0.65rem;
+  border-radius: 9999px;
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.page-fade-in {
+  animation: fadeIn 0.35s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 576px) {
+  .ott-hero-billboard {
+    min-height: 420px;
+  }
+  .ott-movie-card {
+    flex: 0 0 175px;
+    width: 175px;
+  }
+  .ott-movie-card__poster-box {
+    height: 250px;
+  }
+}

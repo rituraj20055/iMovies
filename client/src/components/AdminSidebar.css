@@ -1,0 +1,348 @@
+/* ============================================================
+   AdminSidebar.css — Premium Cinema Dark Theme Sidebar
+   Matching iMovies User Portal Design System
+   ============================================================ */
+
+.admin-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 250px;
+  background-color: var(--bg-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  z-index: 1040;
+  transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-shadow: var(--shadow-card);
+}
+
+/* ── Brand / Header ── */
+.admin-sidebar__brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 18px;
+  min-height: 68px;
+  border-bottom: 1px solid var(--border-subtle);
+  transition: background-color 0.2s ease;
+}
+
+.admin-sidebar__brand:hover {
+  background-color: var(--bg-surface);
+}
+
+.admin-sidebar__brand-logo {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--aurora-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 0 16px var(--primary-accent-glow);
+}
+
+.admin-sidebar__brand-film-icon {
+  color: #ffffff;
+  font-size: 17px;
+}
+
+.admin-sidebar__brand-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow: hidden;
+}
+
+.admin-sidebar__brand-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  background: var(--aurora-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  white-space: nowrap;
+}
+
+.admin-sidebar__brand-badge {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 9999px;
+  background: var(--aurora-gradient-subtle);
+  border: 1px solid var(--primary-accent);
+  color: var(--primary-accent);
+  white-space: nowrap;
+}
+
+/* ── Admin Identity ── */
+.admin-sidebar__identity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  background-color: var(--bg-surface);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.admin-sidebar__avatar-wrapper {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.admin-sidebar__avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--bg-card);
+  border: 2px solid var(--primary-accent);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 15px;
+  box-shadow: 0 0 10px var(--primary-accent-glow);
+}
+
+.admin-sidebar__online-indicator {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: var(--success, #10B981);
+  border: 2px solid var(--bg-surface);
+}
+
+.admin-sidebar__identity-info {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.admin-sidebar__identity-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.admin-sidebar__identity-email {
+  font-size: 11px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Dividers ── */
+.admin-sidebar__divider {
+  height: 1px;
+  background: var(--border-subtle);
+  margin: 0;
+}
+
+/* ── Navigation ── */
+.admin-sidebar__nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 12px;
+}
+
+.admin-sidebar__nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 14px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 13.5px;
+  font-weight: 500;
+  width: 100%;
+  text-align: left;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  white-space: nowrap;
+}
+
+.admin-sidebar__nav-item:hover {
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  transform: translateX(2px);
+}
+
+.admin-sidebar__nav-item--active {
+  background: var(--aurora-gradient-subtle) !important;
+  border-color: rgba(54, 217, 255, 0.25) !important;
+  color: var(--primary-accent) !important;
+  font-weight: 600;
+  box-shadow: 0 2px 10px var(--primary-accent-glow);
+}
+
+[data-theme="light"] .admin-sidebar__nav-item--active {
+  border-color: rgba(8, 126, 164, 0.3) !important;
+  color: var(--primary-accent) !important;
+}
+
+.admin-sidebar__active-indicator {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3.5px;
+  height: 60%;
+  background: var(--aurora-gradient);
+  border-radius: 0 4px 4px 0;
+  box-shadow: 0 0 8px var(--primary-accent-glow);
+}
+
+.admin-sidebar__nav-icon {
+  font-size: 15px;
+  flex-shrink: 0;
+  width: 20px;
+  text-align: center;
+}
+
+.admin-sidebar__nav-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Spacer ── */
+.admin-sidebar__spacer {
+  flex: 1;
+}
+
+/* ── Footer ── */
+.admin-sidebar__footer {
+  padding: 14px 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.admin-sidebar__footer-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 6px;
+}
+
+.admin-sidebar__footer-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.admin-sidebar__footer-compact {
+  display: flex;
+  justify-content: center;
+  padding: 4px 0;
+}
+
+.admin-sidebar__logout {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 13.5px;
+  font-weight: 500;
+  width: 100%;
+  text-align: left;
+  transition: all 0.2s ease;
+  border-radius: 10px;
+}
+
+.admin-sidebar__logout:hover {
+  color: var(--danger, #EF4444);
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.2);
+}
+
+/* ── Mobile Hamburger Toggle ── */
+.admin-sidebar__mobile-toggle {
+  display: none;
+  position: fixed;
+  top: 14px;
+  left: 14px;
+  z-index: 1050;
+  background: var(--aurora-gradient);
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  width: 42px;
+  height: 42px;
+  font-size: 17px;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px var(--primary-accent-glow);
+  transition: transform 0.2s ease;
+}
+
+.admin-sidebar__mobile-toggle:hover {
+  transform: scale(1.05);
+}
+
+/* ── Mobile Overlay ── */
+.admin-sidebar__overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(8, 13, 27, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 1039;
+}
+
+/* ── Responsive Behavior ── */
+@media (max-width: 768px) {
+  .admin-sidebar__mobile-toggle {
+    display: flex;
+  }
+
+  .admin-sidebar__overlay {
+    display: block;
+  }
+
+  .admin-sidebar {
+    transform: translateX(0);
+    width: 250px;
+  }
+
+  .admin-sidebar--collapsed {
+    transform: translateX(-100%);
+  }
+}
+
+@media (min-width: 769px) {
+  .admin-sidebar--collapsed {
+    width: 68px;
+  }
+}
