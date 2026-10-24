@@ -111,6 +111,17 @@ const Footer = () => {
                   Saved Shows
                 </Link>
               </li>
+              <li>
+                <Link
+                  to="/admin-login"
+                  className="text-decoration-none d-flex align-items-center gap-1.5 pt-1"
+                  style={{ color: 'var(--text-secondary)', fontWeight: 600 }}
+                  title="Authorized Staff Portal"
+                >
+                  <FontAwesomeIcon icon={faShieldAlt} style={{ color: 'var(--primary-accent)' }} />
+                  <span>Admin Portal</span>
+                </Link>
+              </li>
             </ul>
           </div>
 

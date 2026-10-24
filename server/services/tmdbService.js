@@ -10,7 +10,7 @@ const TMDB_BASE_URL = process.env.TMDB_BASE_URL || 'https://api.tmdb.org/3';
 
 const tmdbClient = axios.create({
   baseURL: TMDB_BASE_URL,
-  timeout: 10000,
+  timeout: 4000,
   params: {
     api_key: TMDB_API_KEY,
   },

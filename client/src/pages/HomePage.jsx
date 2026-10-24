@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import HeroBillboard from '../components/HeroBillboard';
@@ -18,6 +18,8 @@ import {
   faBolt,
   faTicketAlt,
   faSortAmountDown,
+  faRedo,
+  faExclamationCircle,
 } from '@fortawesome/free-solid-svg-icons';
 
 const GENRES = [
@@ -51,17 +53,20 @@ const HomePage = () => {
   const [watchlistMovies, setWatchlistMovies] = useState([]);
   const [userFavorites, setUserFavorites] = useState(new Set());
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   // Filters state
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedGenre, setSelectedGenre] = useState('All');
   const [selectedLanguage, setSelectedLanguage] = useState('All');
   const [sortBy, setSortBy] = useState('featured');
+  const initialFetchDone = useRef(false);
 
   // Fetch movies based on filters
   const fetchMovies = useCallback(async () => {
     try {
       setLoading(true);
+      setError(null);
       const params = {};
       if (searchQuery.trim()) params.search = searchQuery.trim();
       if (selectedGenre !== 'All') params.genre = selectedGenre;
@@ -82,6 +87,7 @@ const HomePage = () => {
       setMovies(list);
     } catch (err) {
       console.error('Failed to load movies:', err);
+      setError(err?.response?.data?.message || 'Unable to load movies. Server might be waking up or offline.');
     } finally {
       setLoading(false);
     }
@@ -124,6 +130,7 @@ const HomePage = () => {
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       fetchMovies();
+      initialFetchDone.current = true;
     }, 280);
     return () => clearTimeout(timeoutId);
   }, [fetchMovies]);
@@ -197,6 +204,35 @@ const HomePage = () => {
     return deduplicateMovies(filtered);
   }, [movies]);
 
+  // Loading skeleton placeholder for horizontal movie rows
+  const renderRowSkeleton = (label) => (
+    <div className="mb-5">
+      <div className="d-flex align-items-center gap-2 mb-3">
+        <div className="movie-row-indicator" />
+        <h4 className="fw-bold mb-0 text-muted" style={{ fontSize: '1.15rem' }}>{label}</h4>
+      </div>
+      <div className="d-flex gap-3 overflow-hidden">
+        {[1, 2, 3, 4, 5, 6].map((i) => (
+          <div
+            key={i}
+            className="rounded-4 placeholder-glow flex-shrink-0"
+            style={{
+              width: '180px',
+              height: '270px',
+              backgroundColor: 'var(--bg-card)',
+              border: '1px solid var(--border-color)',
+            }}
+          >
+            <div
+              className="placeholder rounded-3 w-100 h-100"
+              style={{ backgroundColor: 'var(--bg-surface)' }}
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
   return (
     <div
       className="d-flex flex-column min-vh-100 page-fade-in"
@@ -206,12 +242,29 @@ const HomePage = () => {
 
       <main className="flex-grow-1">
         {/* Cinematic Hero Billboard (Shown when browsing default view) */}
-        {!hasActiveFilters && trendingMovies.length > 0 && (
-          <HeroBillboard
-            movies={trendingMovies}
-            userFavorites={userFavorites}
-            onFavoriteToggle={handleFavoriteToggle}
-          />
+        {!hasActiveFilters && (
+          loading && movies.length === 0 ? (
+            <div className="container pt-3 mb-4">
+              <div
+                className="rounded-4 placeholder-glow p-5 d-flex flex-column justify-content-end"
+                style={{
+                  minHeight: '360px',
+                  backgroundColor: 'var(--bg-card)',
+                  border: '1px solid var(--border-color)',
+                }}
+              >
+                <div className="placeholder col-6 mb-3" style={{ height: '36px', backgroundColor: 'var(--bg-surface)' }} />
+                <div className="placeholder col-4 mb-4" style={{ height: '20px', backgroundColor: 'var(--bg-surface)' }} />
+                <div className="placeholder col-8" style={{ height: '16px', backgroundColor: 'var(--bg-surface)' }} />
+              </div>
+            </div>
+          ) : trendingMovies.length > 0 ? (
+            <HeroBillboard
+              movies={trendingMovies}
+              userFavorites={userFavorites}
+              onFavoriteToggle={handleFavoriteToggle}
+            />
+          ) : null
         )}
 
         <div className="container py-3">
@@ -350,6 +403,26 @@ const HomePage = () => {
                     </div>
                   ))}
                 </div>
+              ) : error ? (
+                <div
+                  className="text-center py-5 rounded-4 my-4"
+                  style={{
+                    backgroundColor: 'var(--bg-card)',
+                    border: '1px solid var(--border-color)',
+                  }}
+                >
+                  <div className="mb-3" style={{ fontSize: '3rem', color: 'var(--danger)' }}>
+                    <FontAwesomeIcon icon={faExclamationCircle} />
+                  </div>
+                  <h4 className="fw-bold mb-2" style={{ color: 'var(--text-primary)' }}>Failed to load results</h4>
+                  <p className="mb-4 mx-auto text-secondary" style={{ maxWidth: '440px' }}>
+                    {error}
+                  </p>
+                  <button type="button" onClick={() => fetchMovies()} className="btn-cyan px-4 py-2 d-inline-flex align-items-center gap-2">
+                    <FontAwesomeIcon icon={faRedo} />
+                    <span>Try Again</span>
+                  </button>
+                </div>
               ) : movies.length > 0 ? (
                 <div className="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4">
                   {movies.map((movie) => (
@@ -384,6 +457,39 @@ const HomePage = () => {
                 </div>
               )}
             </section>
+          ) : error && movies.length === 0 ? (
+            /* Error state for default view with retry */
+            <div
+              className="text-center py-5 rounded-4 my-4"
+              style={{
+                backgroundColor: 'var(--bg-card)',
+                border: '1px solid var(--border-color)',
+              }}
+            >
+              <div className="mb-3" style={{ fontSize: '3.5rem', color: 'var(--danger)' }}>
+                <FontAwesomeIcon icon={faExclamationCircle} />
+              </div>
+              <h3 className="fw-bold mb-2" style={{ color: 'var(--text-primary)' }}>Unable to Load Movies</h3>
+              <p className="mb-4 mx-auto text-secondary" style={{ maxWidth: '480px' }}>
+                {error || 'Our movie servers are currently warming up or momentarily unreachable. Please click Retry below to load the cinema catalog.'}
+              </p>
+              <button
+                type="button"
+                onClick={() => fetchMovies()}
+                className="btn btn-primary rounded-pill px-4 py-2 d-inline-flex align-items-center gap-2"
+                style={{ fontWeight: 700 }}
+              >
+                <FontAwesomeIcon icon={faRedo} />
+                <span>Retry Loading Blockbusters</span>
+              </button>
+            </div>
+          ) : loading && movies.length === 0 ? (
+            /* Loading skeletons for default view */
+            <div className="mb-5">
+              {renderRowSkeleton('Trending Now')}
+              {renderRowSkeleton('Now Showing in Theatres')}
+              {renderRowSkeleton('Action & Sci-Fi Universe')}
+            </div>
           ) : (
             /* CURATED OTT CONTENT ROWS */
             <div className="mb-5">

@@ -75,9 +75,9 @@
   --bg-glass: rgba(243, 246, 252, 0.94);
 
   /* Text Colors */
-  --text-primary: #17233D;            /* Primary text */
-  --text-secondary: #63718A;          /* Secondary text */
-  --text-muted: #8E9BAE;              /* Tertiary grey */
+  --text-primary: #111827;            /* High-contrast dark primary text */
+  --text-secondary: #4B5563;          /* High-contrast subtitle & secondary text */
+  --text-muted: #6B7280;              /* High-contrast tertiary grey */
 
   /* Aurora Accent System (Light Mode Variant) */
   --primary-accent: #087EA4;          /* Primary accent (deep cyan) */
@@ -334,6 +334,8 @@ a:hover {
 
 [data-theme="light"] .btn-glass {
   background: rgba(0, 0, 0, 0.04);
+  border-color: #DCE4F0 !important;
+  color: #111827 !important;
 }
 
 .btn-glass:hover {

@@ -27,22 +27,89 @@ const deduplicateList = (list) => {
   return result;
 };
 
+// Simple in-memory response cache for movie listings (TTL: 30 seconds)
+const movieCache = new Map();
+const CACHE_TTL_MS = 30 * 1000;
+
+const getCached = (key) => {
+  const item = movieCache.get(key);
+  if (item && Date.now() - item.time < CACHE_TTL_MS) {
+    return item.data;
+  }
+  movieCache.delete(key);
+  return null;
+};
+
+const setCached = (key, data) => {
+  movieCache.set(key, { data, time: Date.now() });
+};
+
+const clearMovieCache = () => {
+  movieCache.clear();
+};
+
 /**
  * GET /api/movie
- * Fetches real-time market movies from TMDB (with support for search, genre, language filters)
- * and synchronizes them to MongoDB for full booking capability.
+ * Fetches movies with high performance directly from MongoDB Atlas.
+ * Applies instant in-memory caching and only triggers TMDB sync if the database is unseeded.
  */
 const getAllMovies = async (req, res) => {
   try {
-    const { genre, language, search, page } = req.query;
-    const rawMovies = await tmdbService.getLiveMarketMovies({
-      page: page ? Number(page) : 1,
-      search: search || '',
-      genre: genre || '',
-      language: language || '',
-    });
-    const movies = deduplicateList(rawMovies);
-    res.json({ success: true, count: movies.length, movies });
+    const { genre, language, search, page = 1, limit = 50 } = req.query;
+    const cacheKey = `all_${genre || ''}_${language || ''}_${search || ''}_${page}_${limit}`;
+
+    const cached = getCached(cacheKey);
+    if (cached) {
+      return res.json(cached);
+    }
+
+    const filter = { isActive: { $ne: false } };
+
+    if (search && search.trim()) {
+      filter.movieName = { $regex: search.trim(), $options: 'i' };
+    }
+    if (genre && genre !== 'All' && genre !== 'ALL') {
+      filter.genres = { $in: [new RegExp(`^${genre.trim()}$`, 'i')] };
+    }
+    if (language && language !== 'All' && language !== 'ALL') {
+      filter.language = { $regex: language.trim(), $options: 'i' };
+    }
+
+    const skip = (Number(page) - 1) * Number(limit);
+    let movies = await Movie.find(filter)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(Number(limit))
+      .lean();
+
+    // If completely empty database (fresh deploy), run one-time TMDB sync
+    if (movies.length === 0 && !search && (!genre || genre === 'All') && (!language || language === 'All')) {
+      const totalInDb = await Movie.countDocuments();
+      if (totalInDb === 0) {
+        console.log('Database empty, running initial TMDB sync...');
+        const rawMovies = await tmdbService.getLiveMarketMovies({ page: 1 });
+        movies = deduplicateList(rawMovies);
+      }
+    } else if (movies.length === 0 && search && search.trim()) {
+      // If user searched for a title not yet in DB, try quick TMDB lookup
+      try {
+        const tmdbResults = await tmdbService.searchMoviesFromTMDB(search.trim(), 1);
+        if (tmdbResults && tmdbResults.length > 0) {
+          const synced = await tmdbService.syncTMDBMoviesToDatabase(tmdbResults.slice(0, 5), false);
+          if (synced && synced.length > 0) {
+            movies = synced;
+          }
+        }
+      } catch (searchErr) {
+        // Non-fatal fallback
+      }
+    }
+
+    const deduped = deduplicateList(movies);
+    const responsePayload = { success: true, count: deduped.length, movies: deduped };
+    setCached(cacheKey, responsePayload);
+
+    res.json(responsePayload);
   } catch (err) {
     console.error('getAllMovies error:', err.message);
     res.status(500).json({ success: false, message: err.message });
@@ -51,13 +118,28 @@ const getAllMovies = async (req, res) => {
 
 /**
  * GET /api/movie/featured
- * Fetches top trending/popular market movies from TMDB with strict deduplication
+ * Ultra-fast query for top-rated blockbusters
  */
 const getFeaturedMovies = async (req, res) => {
   try {
-    const rawMovies = await tmdbService.getLiveMarketMovies({ page: 1 });
-    const movies = deduplicateList(rawMovies);
-    res.json({ success: true, count: Math.min(movies.length, 8), movies: movies.slice(0, 8) });
+    const cacheKey = 'featured_movies';
+    const cached = getCached(cacheKey);
+    if (cached) return res.json(cached);
+
+    let movies = await Movie.find({ isActive: { $ne: false } })
+      .sort({ rating: -1, voteCount: -1 })
+      .limit(10)
+      .lean();
+
+    if (movies.length === 0) {
+      movies = await Movie.find({ isActive: { $ne: false } }).limit(10).lean();
+    }
+
+    const deduped = deduplicateList(movies).slice(0, 8);
+    const payload = { success: true, count: deduped.length, movies: deduped };
+    setCached(cacheKey, payload);
+
+    res.json(payload);
   } catch (err) {
     console.error('getFeaturedMovies error:', err.message);
     res.status(500).json({ success: false, message: err.message });
@@ -66,14 +148,24 @@ const getFeaturedMovies = async (req, res) => {
 
 /**
  * GET /api/movie/now-playing
- * Explicit endpoint for live now-playing market releases
+ * Instant direct query for latest theatrical releases
  */
 const getNowPlaying = async (req, res) => {
   try {
-    const rawList = await tmdbService.fetchNowPlayingFromTMDB(Number(req.query.page) || 1);
-    const synced = await tmdbService.syncTMDBMoviesToDatabase(rawList.slice(0, 20), false);
-    const movies = deduplicateList(synced);
-    res.json({ success: true, count: movies.length, movies });
+    const cacheKey = 'now_playing_movies';
+    const cached = getCached(cacheKey);
+    if (cached) return res.json(cached);
+
+    const movies = await Movie.find({ isActive: { $ne: false } })
+      .sort({ releaseDate: -1 })
+      .limit(20)
+      .lean();
+
+    const deduped = deduplicateList(movies);
+    const payload = { success: true, count: deduped.length, movies: deduped };
+    setCached(cacheKey, payload);
+
+    res.json(payload);
   } catch (err) {
     console.error('getNowPlaying error:', err.message);
     res.status(500).json({ success: false, message: err.message });
@@ -82,14 +174,24 @@ const getNowPlaying = async (req, res) => {
 
 /**
  * GET /api/movie/popular
- * Explicit endpoint for live popular market releases
+ * Instant direct query for popular blockbusters
  */
 const getPopular = async (req, res) => {
   try {
-    const rawList = await tmdbService.fetchPopularFromTMDB(Number(req.query.page) || 1);
-    const synced = await tmdbService.syncTMDBMoviesToDatabase(rawList.slice(0, 20), false);
-    const movies = deduplicateList(synced);
-    res.json({ success: true, count: movies.length, movies });
+    const cacheKey = 'popular_movies';
+    const cached = getCached(cacheKey);
+    if (cached) return res.json(cached);
+
+    const movies = await Movie.find({ isActive: { $ne: false } })
+      .sort({ voteCount: -1, rating: -1 })
+      .limit(20)
+      .lean();
+
+    const deduped = deduplicateList(movies);
+    const payload = { success: true, count: deduped.length, movies: deduped };
+    setCached(cacheKey, payload);
+
+    res.json(payload);
   } catch (err) {
     console.error('getPopular error:', err.message);
     res.status(500).json({ success: false, message: err.message });
@@ -98,11 +200,19 @@ const getPopular = async (req, res) => {
 
 /**
  * GET /api/movie/:id
- * Fetches movie by MongoDB ID or TMDB ID (with on-demand live TMDB enrichment)
+ * Fetches movie by MongoDB ID instantly; falls back to TMDB lookup if not present
  */
 const getMovieById = async (req, res) => {
   try {
-    const movie = await tmdbService.getOrFetchMovie(req.params.id);
+    const { id } = req.params;
+    if (id && id.length === 24 && /^[0-9a-fA-F]{24}$/.test(id)) {
+      const local = await Movie.findById(id).lean();
+      if (local) {
+        return res.json({ success: true, movie: local });
+      }
+    }
+
+    const movie = await tmdbService.getOrFetchMovie(id);
     if (!movie) return res.status(404).json({ success: false, message: 'Movie not found.' });
     res.json({ success: true, movie });
   } catch (err) {
@@ -151,11 +261,13 @@ const addMovie = async (req, res) => {
       Object.assign(existing, data);
       await existing.save();
       await tmdbService.ensureShowsForMovie(existing);
+      clearMovieCache();
       return res.status(201).json({ success: true, movie: existing, updated: true });
     }
 
     const movie = await Movie.create(data);
     await tmdbService.ensureShowsForMovie(movie);
+    clearMovieCache();
     res.status(201).json({ success: true, movie });
   } catch (err) {
     console.error('addMovie error:', err.message);
@@ -175,6 +287,7 @@ const updateMovie = async (req, res) => {
 
     const movie = await Movie.findByIdAndUpdate(req.params.id, data, { new: true, runValidators: true });
     if (!movie) return res.status(404).json({ success: false, message: 'Movie not found.' });
+    clearMovieCache();
     res.json({ success: true, movie });
   } catch (err) {
     console.error('updateMovie error:', err.message);
@@ -220,6 +333,7 @@ const deleteMovie = async (req, res) => {
         }
       }
 
+      clearMovieCache();
       return res.json({
         success: true,
         message: `Movie "${movie.movieName}" has active booking history. It was safely archived and removed from the active catalogue while preserving customer reservations.`,
@@ -250,6 +364,7 @@ const deleteMovie = async (req, res) => {
       await Movie.findByIdAndDelete(id);
     }
 
+    clearMovieCache();
     res.json({
       success: true,
       message: `Movie "${movie.movieName}" deleted successfully.`,

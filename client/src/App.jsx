@@ -53,6 +53,7 @@ function AppContent() {
           <Route path="/landing"     element={<LandingPage />} />
           <Route path="/login"       element={<LoginPage />} />
           <Route path="/admin-login" element={<LoginPage adminMode={true} />} />
+          <Route path="/admin/login" element={<LoginPage adminMode={true} />} />
           <Route path="/register"    element={<RegisterPage />} />
 
           {/* ── User-protected routes ─────────────────────────────────────── */}
@@ -70,12 +71,19 @@ function AppContent() {
           {/* ── Admin-protected routes ────────────────────────────────────── */}
           <Route element={<AdminProtection />}>
             <Route path="/admin"               element={<AdminDashboard />} />
+            <Route path="/admin/dashboard"     element={<AdminDashboard />} />
             <Route path="/addmovie"            element={<AddMoviePage />} />
+            <Route path="/admin/movies"        element={<AddMoviePage />} />
             <Route path="/addtheatre"          element={<AddTheatrePage />} />
+            <Route path="/admin/theatres"      element={<AddTheatrePage />} />
             <Route path="/addshow"             element={<AddShowPage />} />
+            <Route path="/admin/shows"         element={<AddShowPage />} />
             <Route path="/addadmin"            element={<AddAdminPage />} />
+            <Route path="/admin/admins"        element={<AddAdminPage />} />
             <Route path="/adminbookings"       element={<AdminBookingsPage />} />
+            <Route path="/admin/bookings"      element={<AdminBookingsPage />} />
             <Route path="/admin/transactions"  element={<AdminTransactionsPage />} />
+            <Route path="/admintransactions"   element={<AdminTransactionsPage />} />
           </Route>
 
           {/* ── 404 fallback ──────────────────────────────────────────────── */}

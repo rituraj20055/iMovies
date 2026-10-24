@@ -14,6 +14,7 @@ import {
   faShieldAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import api from '../utils/api';
+import ThemeToggle from '../components/ThemeToggle';
 
 /* ──────────────────────────────────────────
    Styles
@@ -282,6 +283,11 @@ const LoginPage = ({ adminMode = false }) => {
     <div style={S.root}>
       <div style={S.bgBlur} />
 
+      {/* Floating Theme Toggle */}
+      <div style={{ position: 'absolute', top: '20px', right: '20px', zIndex: 10 }}>
+        <ThemeToggle />
+      </div>
+
       <div style={S.card}>
         {/* Logo & Header */}
         <div style={S.logoWrap}>
@@ -365,10 +371,10 @@ const LoginPage = ({ adminMode = false }) => {
         {/* Footer links */}
         {isAdminPortal ? (
           <div style={{ textAlign: 'center', marginTop: '16px' }}>
-            <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.4)', marginBottom: '12px', lineHeight: 1.5 }}>
+            <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: '12px', lineHeight: 1.5 }}>
               🔒 Administrator accounts are pre-seeded or provisioned internally by Super Admins. Public registration is prohibited.
             </div>
-            <Link to="/login" style={{ ...S.linkA, fontSize: '0.82rem' }}>
+            <Link to="/login" style={{ ...S.linkA, fontSize: '0.85rem' }}>
               ← Return to User Login
             </Link>
           </div>
@@ -380,9 +386,24 @@ const LoginPage = ({ adminMode = false }) => {
                 Sign Up
               </Link>
             </p>
-            <div style={{ textAlign: 'center', marginTop: '14px', paddingTop: '12px', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-              <Link to="/admin-login" style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.75rem', textDecoration: 'none' }}>
-                Admin Portal →
+            <div style={{ textAlign: 'center', marginTop: '14px', paddingTop: '12px', borderTop: '1px solid var(--border-color)' }}>
+              <Link
+                to="/admin-login"
+                style={{
+                  color: 'var(--text-secondary)',
+                  fontSize: '0.82rem',
+                  fontWeight: 600,
+                  textDecoration: 'none',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  transition: 'color 0.2s',
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--primary-accent)')}
+                onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--text-secondary)')}
+              >
+                <FontAwesomeIcon icon={faShieldAlt} style={{ color: 'var(--primary-accent)' }} />
+                <span>Admin Portal Access →</span>
               </Link>
             </div>
           </div>

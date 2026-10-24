@@ -16,6 +16,7 @@ import {
   faTimesCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import api from '../utils/api';
+import ThemeToggle from '../components/ThemeToggle';
 
 /* ──────────────────────────────────────────
    Password strength helpers
@@ -320,6 +321,11 @@ const RegisterPage = () => {
   return (
     <div style={S.root}>
       <div style={S.bgBlur} />
+
+      {/* Floating Theme Toggle */}
+      <div style={{ position: 'absolute', top: '20px', right: '20px', zIndex: 10 }}>
+        <ThemeToggle />
+      </div>
 
       <div style={S.card}>
         {/* Logo */}

@@ -13,10 +13,15 @@ export const ThemeProvider = ({ children }) => {
   });
 
   useEffect(() => {
-    // Apply data-theme attribute on root element
+    // Apply data-theme attribute on root element and document body
     document.documentElement.setAttribute('data-theme', theme);
     document.documentElement.classList.remove('theme-dark', 'theme-light');
     document.documentElement.classList.add(`theme-${theme}`);
+    if (document.body) {
+      document.body.setAttribute('data-theme', theme);
+      document.body.style.backgroundColor = theme === 'dark' ? 'var(--bg-primary)' : '#F3F6FC';
+      document.body.style.color = theme === 'dark' ? '#FFFFFF' : '#111827';
+    }
     localStorage.setItem('imovies-theme', theme);
   }, [theme]);
 
