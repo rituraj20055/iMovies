@@ -26,6 +26,7 @@ const AddShowPage          = lazy(() => import('./pages/admin/AddShowPage'))
 const AddAdminPage         = lazy(() => import('./pages/admin/AddAdminPage'))
 const AdminBookingsPage     = lazy(() => import('./pages/admin/AdminBookingsPage'))
 const AdminTransactionsPage = lazy(() => import('./pages/admin/AdminTransactionsPage'))
+const NotFoundPage          = lazy(() => import('./pages/NotFoundPage'))
 
 function AppContent() {
   const { isDark } = useTheme();
@@ -87,7 +88,7 @@ function AppContent() {
           </Route>
 
           {/* ── 404 fallback ──────────────────────────────────────────────── */}
-          <Route path="*" element={<Navigate to="/landing" replace />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Suspense>
     </Router>
