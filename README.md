@@ -5,6 +5,19 @@
 
 ---
 
+## 📁 Project Documentation
+
+Detailed system architecture blueprints, entity relationships, user journeys, and team role allocations are thoroughly documented inside the [`docs/`](./docs) directory:
+
+| Document | Focus Area | Description |
+| :--- | :--- | :--- |
+| 🏛️ **[System Architecture & MVC Implementation](./docs/architecture.md)** | Engineering & Design | Complete breakdown of Models, Views, Controllers, data flow, real-time concurrency, and security. |
+| 👥 **[Team Roles & Responsibilities](./docs/roles.md)** | Governance & Execution | Functional ownership matrix, core responsibilities, and contribution guidelines. |
+| 🗄️ **[Database Entity-Relationship (ER) Diagram](./docs/diagrams/er-diagram.md)** | Data Layer | Visual Mermaid.js relational schema covering all 9 Mongoose models, keys, and constraints. |
+| 🧭 **[End-to-End User Flow Diagram](./docs/diagrams/user-flow.md)** | Experience & Workflows | Visual Mermaid.js journey diagram detailing customer onboarding, seat locking, and admin controls. |
+
+---
+
 ## 🌟 Key Features
 
 ### 👤 User Capabilities
@@ -43,6 +56,12 @@
 
 ```
 iMovies/
+├── docs/                       # Project Documentation
+│   ├── architecture.md         # MVC Pattern & System Architecture
+│   ├── roles.md                # Team Roles & Contribution Matrix
+│   └── diagrams/               # Mermaid.js ER & User Flow Diagrams
+│       ├── er-diagram.md       # Database Schema & Entity Relationships
+│       └── user-flow.md        # Customer & Admin Flowcharts
 ├── client/                     # Frontend (Vite + React.js)
 │   ├── src/
 │   │   ├── components/         # Header, Footer, Loader, MovieCard, AdminSidebar
